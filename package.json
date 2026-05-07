@@ -1,0 +1,24 @@
+{
+  "name": "may6thnodeactivity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasonHar/May6thNodeActivity.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MasonHar/May6thNodeActivity/issues"
+  },
+  "homepage": "https://github.com/MasonHar/May6thNodeActivity#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cars App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Cars App</h1>
+
+  <h2>Add a Car</h2>
+
+  <form id="carForm">
+    <input type="text" id="brand" name="brand" placeholder="Brand" required>
+    <input type="text" id="make" name="make" placeholder="Make" required>
+    <input type="number" id="year" name="year" placeholder="Year" required>
+    <input type="text" id="color" name="color" placeholder="Color" required>
+    <button type="submit">Add Car</button>
+  </form>
+
+  <h2>Cars</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Brand</th>
+        <th>Make</th>
+        <th>Year</th>
+        <th>Color</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="carsTableBody"></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById("carForm");
+    const tableBody = document.getElementById("carsTableBody");
+
+    function beginUpdateCar(carId) {}
+
+    async function loadCars() {
+      const response = await fetch("/api/cars");
+      const cars = await response.json();
+
+      tableBody.innerHTML = "";
+
+      cars.forEach(car => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${car.id}</td>
+          <td>${car.brand}</td>
+          <td>${car.make}</td>
+          <td>${car.year}</td>
+          <td>${car.color}</td>
+          <td>
+            <button type="button" data-action="update" data-id="${car.id}">Update</button>
+            <button type="button" data-action="delete" data-id="${car.id}">Delete</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    tableBody.addEventListener("click", async event => {
+      const btn = event.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+
+      if (action === "delete") {
+        if (!confirm("Delete this car?")) return;
+        await fetch(`/api/cars/${id}`, { method: "DELETE" });
+        loadCars();
+        return;
+      }
+
+      if (action === "update") {
+        beginUpdateCar(id);
+      }
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const newCar = {
+        brand: document.getElementById("brand").value,
+        make: document.getElementById("make").value,
+        year: document.getElementById("year").value,
+        color: document.getElementById("color").value
+      };
+
+      await fetch("/api/cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newCar)
+      });
+
+      form.reset();
+      loadCars();
+    });
+
+    loadCars();
+  </script>
+</body>
+</html>
