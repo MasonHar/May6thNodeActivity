@@ -36,8 +36,21 @@
   <script>
     const form = document.getElementById("carForm");
     const tableBody = document.getElementById("carsTableBody");
+    const submitButton = form.querySelector('button[type="submit"]');
+    const defaultSubmitButtonText = submitButton.textContent;
+    let updatingCarId = null;
 
-    function beginUpdateCar(carId) {}
+    async function beginUpdateCar(carId) {
+      const response = await fetch(`/api/cars/${carId}`);
+      if (!response.ok) return;
+      const car = await response.json();
+      document.getElementById("brand").value = car.brand;
+      document.getElementById("make").value = car.make;
+      document.getElementById("year").value = car.year;
+      document.getElementById("color").value = car.color;
+      updatingCarId = car.id;
+      submitButton.textContent = "Save Changes";
+    }
 
     async function loadCars() {
       const response = await fetch("/api/cars");
@@ -86,22 +99,34 @@
     form.addEventListener("submit", async event => {
       event.preventDefault();
 
-      const newCar = {
+      const carPayload = {
         brand: document.getElementById("brand").value,
         make: document.getElementById("make").value,
         year: document.getElementById("year").value,
         color: document.getElementById("color").value
       };
 
-      await fetch("/api/cars", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newCar)
-      });
+      if (updatingCarId != null) {
+        await fetch(`/api/cars/${updatingCarId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(carPayload)
+        });
+      } else {
+        await fetch("/api/cars", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(carPayload)
+        });
+      }
 
       form.reset();
+      updatingCarId = null;
+      submitButton.textContent = defaultSubmitButtonText;
       loadCars();
     });
 

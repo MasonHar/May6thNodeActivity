@@ -1,7 +1,8 @@
 {
-  "name": "My Dev Container",
-  "image": "vsc-scaffolded-books-f9775182496915a8ee16e5af78d7f50fb51682db256fd69ac5c3a8575768e8bc:latest",
-  "overrideCommand": false,
+  "name": "May6thNodeActivity",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "overrideCommand": true,
+  "remoteUser": "node",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -10,6 +11,6 @@
       ]
     }
   },
-  "postCreateCommand": "node -v && npm -v",
+  "postCreateCommand": "npm install && node -v && npm -v",
   "forwardPorts": [3000]
 }
